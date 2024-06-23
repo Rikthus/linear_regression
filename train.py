@@ -113,6 +113,8 @@ def linear_regression(data: dict, l_rate: float = 0.01, epochs: int = 10000):
 
 
 def bonus_data(t1: float, t0: float, data: dict):
+    plt.scatter(data['km'], data['price'])
+    plt.show()
     r = compute_r(t1, t0, data)
     print(f"theta1 = {t1}")
     print(f"theta0 = {t0}\n")
