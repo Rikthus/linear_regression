@@ -26,9 +26,9 @@ def retrieve_parameters() -> tuple[float, float]:
 def main():
     try:
         t1, t0 = retrieve_parameters()
-        print(t1, t0)
-        mileage = float(input("Enter the car mileage:  "))
-        price_estimate = estimate_price(t1, t0, mileage)
+        kilometers = float(input("Enter the car kilometers:  "))
+        assert kilometers >= 0, "kilometers cannot be negative"
+        price_estimate = estimate_price(t1, t0, kilometers)
         print(f"Estamed price is {price_estimate:.2f}$")
     except Exception as e:
         print(f"{e.__class__.__name__}: {e.args[0]}")
