@@ -15,19 +15,20 @@ def retrieve_parameters() -> tuple[float, float]:
                 if key == "theta0" and t0 == 0:
                     t0 = float(val)
                 elif key == "theta1" and t1 == 0:
-                    t1 = val
+                    t1 = float(val)
                 else:
                     raise Exception("Uncorrect file format")
     except Exception as e:
         print(f"{e.__class__.__name__}: {e.args[0]}")
-    return t0, t1
+    return t1, t0
 
 
 def main():
     try:
-        t0, t1 = retrieve_parameters()
+        t1, t0 = retrieve_parameters()
+        print(t1, t0)
         mileage = float(input("Enter the car mileage:  "))
-        price_estimate = estimate_price(t0, t1, mileage)
+        price_estimate = estimate_price(t1, t0, mileage)
         print(f"Estamed price is {price_estimate:.2f}$")
     except Exception as e:
         print(f"{e.__class__.__name__}: {e.args[0]}")

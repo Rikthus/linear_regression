@@ -2,7 +2,8 @@ import os
 import sys
 import csv
 import matplotlib.pyplot as plt
-from math_ import mean
+
+PARAM_FILE_PATH = "./parameters.txt"
 
 
 def load_data(path: str) -> dict:
@@ -26,6 +27,12 @@ def load_data(path: str) -> dict:
     assert nb_km != 0 and nb_price != 0 and nb_km == nb_price, \
         "dataset should have the same non null number of km and price values"
     return dataset
+
+
+def update_param_file(t1: float, t0: float):
+    with open(PARAM_FILE_PATH, mode='w') as f:
+        f.write(f"theta1 {t1}\n")
+        f.write(f"theta0 {t0}")
 
 
 def loss_function(t1: float, t0: float, dataset: dict):
@@ -81,8 +88,11 @@ def linear_regression(dataset, l_rate: float = 0.0001, epochs: int = 1000000):
     for i in range(epochs):
         t1, t0 = gradient_descent(t1, t0, dataset, l_rate)
         err_rate = loss_function(t1, t0, dataset)
+
     print(f"Error rate: {err_rate}")
-    print(t0, t1)
+    print(f"theta1 = {t1}")
+    print(f"theta0 = {t0}")
+    update_param_file(t1, t0)
 
 
 def main():
