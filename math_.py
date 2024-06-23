@@ -1,7 +1,4 @@
-import numpy as np
-
-
-def mean(arr: np.array) -> float:
+def mean(arr: list) -> float:
     n = len(arr)
     arr_sum = 0
     for val in arr:

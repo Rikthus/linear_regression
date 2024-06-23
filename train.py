@@ -28,30 +28,61 @@ def load_data(path: str) -> dict:
     return dataset
 
 
-def loss_function(a: float, b: float, dataset: dict):
+def loss_function(t1: float, t0: float, dataset: dict):
     err_sum = 0
     m = len(dataset['km'])
     for x, y in zip(dataset['km'], dataset['price']):
-        err_sum += (y - (a*x + b))**2
+        err_sum += (y - (t1*x + t0))**2
     return err_sum / m
 
 
-def estimate_price(t0: float, t1: float, x: float) -> float:
-    return t0 + t1 * x
+def estimate_price(t1: float, t0: float, x: float) -> float:
+    return t1 * x + t0
 
 
-def linear_regression(a: float, b: float, dataset: dict, l_rate: float):
-    t0 = 0
-    t1 = 0
+def min_max_ft_scaling(values: list) -> list:
+    min_val = min(values)
+    max_val = max(values)
+    
+    scaled_values = []
+    
+    for val in values:
+        scaled_val = (val - min_val) / (max_val - min_val)
+        scaled_values.append(scaled_val)
+    
+    return scaled_values
+
+
+def gradient_descent(
+    t1: float,
+    t0: float,
+    dataset: dict,
+    l_rate: float,
+) -> tuple[float, float]:
+    t0_gradient = 0
+    t1_gradient = 0
     m = len(dataset['km'])
 
-    err_sum_t0 = 0
-    err_sum_t1 = 0
     for x, y in zip(dataset['km'], dataset['price']):
-        err_sum_t0
+        t0_gradient += (1 / m) * (estimate_price(t1, t0, x) - y)
+        t1_gradient += (1 / m) * (estimate_price(t1, t0, x) - y) * x
 
-        t0 += tmp_t0
-        t1 += tmp_t1
+    t1 = t1 - l_rate * t1_gradient
+    t0 = t0 - l_rate * t0_gradient
+    return t1, t0
+
+
+def linear_regression(dataset, l_rate: float = 0.0001, epochs: int = 1000000):
+    t1 = 0
+    t0 = 0
+
+    dataset['km'] = min_max_ft_scaling(dataset['km'])
+    err_rate = 0
+    for i in range(epochs):
+        t1, t0 = gradient_descent(t1, t0, dataset, l_rate)
+        err_rate = loss_function(t1, t0, dataset)
+    print(f"Error rate: {err_rate}")
+    print(t0, t1)
 
 
 def main():
@@ -63,9 +94,9 @@ def main():
             "<dataset/path> should be a string"
         dataset = load_data(args[1])
         assert dataset
-        plt.scatter(dataset['km'], dataset['price'])
-        plt.show()
-        # train_model(df)
+        # plt.scatter(dataset['km'], dataset['price'])
+        # plt.show()
+        linear_regression(dataset)
     except Exception as e:
         print(f"{e.__class__.__name__}: {e.args[0]}")
 

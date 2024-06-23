@@ -1,8 +1,8 @@
 PARAM_FILE_PATH = "./parameters.txt"
 
 
-def estimate_price(t0: float, t1: float, x: float) -> float:
-    return t0 + t1 * x
+def estimate_price(t1: float, t0: float, x: float) -> float:
+    return t1 * x + t0
 
 
 def retrieve_parameters() -> tuple[float, float]:
