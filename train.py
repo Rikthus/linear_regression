@@ -2,6 +2,7 @@ import os
 import sys
 import csv
 import matplotlib.pyplot as plt
+import stats_ as st
 
 PARAM_FILE_PATH = "./parameters.txt"
 
@@ -48,22 +49,22 @@ def compute_r(t1: float, t0: float, data: dict):
 
 
 def min_max_scaling(values: list) -> list:
-    x_min = min(values)
-    x_max = max(values)
+    x_min = st.min(values)
+    x_max = st.max(values)
     assert x_max > x_min, "max and min_values are the same"
 
     scaled_values = []
     for val in values:
-            scaled_val = (val - x_min) / (x_max - x_min)
-            scaled_values.append(scaled_val)
+        scaled_val = (val - x_min) / (x_max - x_min)
+        scaled_values.append(scaled_val)
     return scaled_values
 
 
 def unscale_params(t1: float, t0: float, data: dict) -> tuple[float, float]:
-    x_min = min(data['km'])
-    x_max = max(data['km'])
-    y_min = min(data['price'])
-    y_max = max(data['price'])
+    x_min = st.min(data['km'])
+    x_max = st.max(data['km'])
+    y_min = st.min(data['price'])
+    y_max = st.max(data['price'])
 
     t1 = t1 * (y_max - y_min) / (x_max - x_min)
     t0 = (t0 * (y_max - y_min)) + y_min - t1 * x_min
@@ -113,9 +114,11 @@ def linear_regression(data: dict, l_rate: float = 0.01, epochs: int = 10000):
 
 def bonus_data(t1: float, t0: float, data: dict):
     r = compute_r(t1, t0, data)
-    print(f"r value: {r:.2f}")
     print(f"theta1 = {t1}")
-    print(f"theta0 = {t0}")
+    print(f"theta0 = {t0}\n")
+    print(f"R:    {r:.2f}")
+    print(f"R^2:  {r**2:.2f}\n")
+    st.describe(data)
     plt.scatter(data['km'], data['price'])
     plt.plot(data['km'], [estimate_price(t1, t0, x) for x in data['km']])
     plt.xlabel("Distance in km")
