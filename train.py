@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import stats_ as st
 
 PARAM_FILE_PATH = "./parameters.txt"
+DEFAULT_L_RATE = 0.01
+DEFAULT_EPOCHS = 10000
 
 
 def load_data(path: str) -> dict:
@@ -94,7 +96,7 @@ def gradient_descent(
     return tmp_t1, tmp_t0
 
 
-def linear_regression(data: dict, l_rate: float = 0.01, epochs: int = 10000):
+def linear_regression(data: dict, l_rate: float, epochs: int):
     t1 = 0
     t0 = 0
     norm_data = {}
@@ -131,13 +133,23 @@ def bonus_data(t1: float, t0: float, data: dict):
 def main():
     try:
         args = sys.argv
-        assert len(args) == 2, \
-            "usage: train.py <data/path>"
+        argc = len(args)
+        assert argc >= 2 and argc <= 4, \
+            "usage: train.py <data/path> [<learning rate>, <epochs>]"
         assert isinstance(args[1], str), \
             "<data/path> should be a string"
         data = load_data(args[1])
-        assert data
-        linear_regression(data)
+        l_rate = DEFAULT_L_RATE
+        epochs = DEFAULT_EPOCHS
+        if argc > 2:
+            l_rate = float(args[2])
+            assert l_rate > 0 and l_rate < 2, \
+                "<learning rate> should be strictly positiv and lower than 2"
+        if argc == 4:
+            epochs = int(args[3])
+            assert epochs > 0 and epochs < 10000000, \
+                "<epochs> should be stricly positiv and lower than 10 million"
+        linear_regression(data, l_rate, epochs)
     except Exception as e:
         print(f"{e.__class__.__name__}: {e.args[0]}")
 
