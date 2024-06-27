@@ -41,12 +41,11 @@ def update_param_file(t1: float, t0: float):
 def compute_r(t1: float, t0: float, data: dict):
     err_fit = 0
     err_mean = 0
-    m = len(data['km'])
     for x, y in zip(data['km'], data['price']):
         err_fit += ((y - (t1*x + t0))**2)**0.5
         err_mean += y
-    err_fit = err_fit / m
-    err_mean = err_mean / m
+    err_fit = err_fit
+    err_mean = err_mean
     return (err_mean - err_fit) / err_mean
 
 
