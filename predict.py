@@ -1,4 +1,4 @@
-PARAM_FILE_PATH = "./parameters.txt"
+PARAM_FILE_PATH = "./weights.txt"
 
 
 def estimate_price(t1: float, t0: float, x: float) -> float:

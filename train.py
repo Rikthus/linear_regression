@@ -4,7 +4,7 @@ import csv
 import matplotlib.pyplot as plt
 import stats_ as st
 
-PARAM_FILE_PATH = "./parameters.txt"
+PARAM_FILE_PATH = "./weights.txt"
 DEFAULT_L_RATE = 0.01
 DEFAULT_EPOCHS = 10000
 
@@ -39,14 +39,20 @@ def update_param_file(t1: float, t0: float):
 
 
 def compute_r(t1: float, t0: float, data: dict):
-    err_fit = 0
-    err_mean = 0
+    fit = 0
+    truth = 0
     for x, y in zip(data['km'], data['price']):
-        err_fit += ((y - (t1*x + t0))**2)**0.5
-        err_mean += y
-    err_fit = err_fit
-    err_mean = err_mean
-    return (err_mean - err_fit) / err_mean
+        fit += ((y - (t1*x + t0))**2)**0.5
+        truth += y
+    return (truth - fit) / truth
+
+
+def compute_mse(t1: float, t0: float, data: dict):
+    se = 0
+    m = len(data['km'])
+    for x, y in zip(data['km'], data['price']):
+        se += (y - (t1 * x + t0))**2
+    return se / m
 
 
 def min_max_scaling(values: list) -> list:
@@ -117,10 +123,12 @@ def bonus_data(t1: float, t0: float, data: dict):
     plt.scatter(data['km'], data['price'])
     plt.show()
     r = compute_r(t1, t0, data)
-    print(f"theta1 = {t1}")
-    print(f"theta0 = {t0}\n")
+    mse = compute_mse(t1, t0, data)
+    print(f"theta1: {t1}")
+    print(f"theta0: {t0}\n")
     print(f"R:    {r:.2f}")
     print(f"R^2:  {r**2:.2f}\n")
+    print(f"MSE:  {mse:.2f}\n")
     st.describe(data)
     plt.scatter(data['km'], data['price'])
     plt.plot(data['km'], [estimate_price(t1, t0, x) for x in data['km']])
